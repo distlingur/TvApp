@@ -6,13 +6,15 @@ import ChannelScreen from './ChannelScreen';
 import Welcome from './WelcomeScreen';
 
 
-const App = () => {
-  return (
-    <Router>
+
+export default class App extends Component {
+  render() {
+    return (
+      <Router>
       <Scene key="root">
-        <Scene key="Welcome"
-          component={Welcome}
-          title="Sjónvarpsstöðvar App"
+        <Scene key="scarlet"
+          component={TvScreen}
+          title="Sjónvarpsstöðvar"
           initial
         />
         <Scene key="scarlet"
@@ -27,11 +29,7 @@ const App = () => {
         />
       </Scene>
     </Router>
-  );
+    )
+  }
 }
-
-export default App;
-
-
-
 
