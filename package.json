@@ -20,7 +20,11 @@
     "jest": "18.1.0",
     "react-test-renderer": "15.4.2"
   },
+
   "jest": {
-    "preset": "react-native"
-  }
+    "preset": "react-native",
+    "setupFiles": [
+      "<rootDir>/jest/setup.js"
+    ]
+      }
 }

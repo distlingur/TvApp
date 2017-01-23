@@ -15,7 +15,7 @@ import {
   Image
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-var moment = require('moment');
+import moment from 'moment';
 
 
 
