@@ -22,56 +22,54 @@ var moment = require('moment');
 
 var styles = StyleSheet.create({
     container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+        marginBottom: 5,
+
+  },
+  header: {
         flex: 1,
-        marginTop:30,
-        flexDirection: 'row',
-        justifyContent: 'center',
+
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-
-        padding: 1,
+        justifyContent: 'center'
     },
-    thumbnail: {
-        width: 53,
-        height: 1,
-        marginRight: 0
-    },
-    rightContainer: {
-        flex: 1,
-
-
-    },
-    content: {
-        fontSize: 20,
-        marginBottom: 8,
-        flex: 1,
-
-    },
-    author: {
-        color: '#656565'
-    },
-    separator: {
+  rightContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  year: {
+    textAlign: 'center',
+  },
+  thumbnail: {
+    width: 53,
+    height: 81,
+  },
+  separator: {
         height: 1,
         backgroundColor: '#dddddd'
     },
-    listView: {
-        backgroundColor: '#F5FCFF'
-    },
-    loading: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
+  listView: {
+    paddingTop: 20,
+    backgroundColor: '#F5FCFF',
+  },
 });
 
-class BookList extends Component {
+class ChannelList extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             isLoading: true,
             dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2
+                rowHasChanged: (row1, row2) => row1 !== row2,
+
             })
         };
     }
@@ -79,11 +77,16 @@ class BookList extends Component {
     componentDidMount() {
         this.fetchData();
     }
-    _renderScene(route, navigator) {
-    if (route.id === 2) {
-      return <channels navigator={navigator} />
-        }
-    }
+    loadError(){
+    console.log('loaded');
+    return (
+    <View>
+    <Text>
+    something goes wrong.
+    </Text>
+    </View>
+    )
+    }   
     fetchData() {
         var REQUEST_URL = 'http://apis.is' + this.props.data;
 
@@ -92,62 +95,66 @@ class BookList extends Component {
             .then((responseData) => {
                 
 
-                    
-                
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(responseData.results),
                     isLoading: false
                 });
-            })
+            }).catch( (error) => {
+                console.warn('Það vantar gögn hér!!', error)
+    })
             .done();
     }
 
     render() {
-        <Navigator
-        initialRoute={{id: 1, }}
-        renderScene={this._renderScene}
-         />
+      
         if (this.state.isLoading) {
             return this.renderLoadingView();
         }
 
         return (
-            
+
             <ListView
                 dataSource={this.state.dataSource}
-                renderRow={this.renderBook.bind(this)}
+                renderRow={this.renderChannelData.bind(this)}
+                renderHeader={this.renderHeader.bind(this)}
+                renderError={this.loadError.bind(this)}
+
                 style={styles.listView}
                 />
+           
         );
     }
+    renderHeader() {
+    return (<View style={styles.header}>
+        <Text style={styles.title}>Dagsetning: {moment(new Date()).format('DD/MM/YYYY')}</Text></View>);
 
-    renderBook(book) {
-
-
+    }
+    renderChannelData(data) {
+       
         return(
-             <View>
-                    <Text style={styles.content}>Dagsetning: {moment(book.startTime).format('MM/DD/YYYY')}</Text>
-
-                    <View style={styles.container}>
-                        
-                        <View style={styles.loading}>
-
-                            <Text style={styles.content}>{book.title}</Text>
-                            <Text style={styles.content}> {book.originalTitle}</Text>
-                            <Text style={styles.content}>Klukkan: {moment(book.startTime).format('hh : mm ')}</Text>
-                            <Text style={styles.content}>Tímalengd: {book.duration}</Text>
+        <View>
+         <View style={styles.header}>
 
 
-
-                        </View>
                     </View>
+            <View style={styles.container}>
+                <Text style={styles.content}>{moment(data.startTime).format('HH : mm ')}</Text>
 
-                    <View style={styles.separator} />
+        
+        <View style={styles.rightContainer}>
+            <Text style={styles.title}>{console.log(data)}</Text>
+
+          <Text style={styles.title}>{data.title}</Text>
+          <Text style={styles.year}> {data.originalTitle}</Text>
+          <Text style={styles.year}>Tímalengd: {data.duration}</Text>
+        </View>
+
+      </View>
+                                  <View style={styles.separator} />
+
         </View>
            
          );
-   
-       
     }
 
     renderLoadingView() {
@@ -160,14 +167,6 @@ class BookList extends Component {
             </View>
         );
     }
-
-    showBookDetail() {
-
-            this.navigator.push({id: 2,});
-
-    }
-
-
 }
 
-module.exports = BookList;
+module.exports = ChannelList;

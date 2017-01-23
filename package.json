@@ -7,11 +7,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "babel-core": "^5.6.11",
     "moment": "^2.17.1",
     "react": "15.4.2",
     "react-native": "0.40.0",
-    "babel-core": "^5.6.11",
-    "react-native-router-flux": "^3.37.0"
+    "react-native-router-flux": "^3.37.0",
+    "react-native-sortable-listview": "^0.1.1"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",

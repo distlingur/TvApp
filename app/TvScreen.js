@@ -9,70 +9,19 @@ import {
   Text,
   View,
   ListView,
-  Navigator,
+
   TouchableHighlight,
   TouchableOpacity,
   Image
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import Tabs from 'react-native-tabs';
+
 
 var REQUEST_URL = 'http://apis.is/tv/';
 
 
-
-var styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-
-        padding: 10,
-    },
-    cellContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-        marginTop:60,
-
-        padding: 10
-    },
-    thumbnail: {
-        width: 53,
-        height: 81,
-        marginRight: 10
-    },
-    rightContainer: {
-        flex: 1,
-
-
-    },
-    content: {
-        fontSize: 20,
-        marginBottom: 8,
-        flex: 1,
-
-    },
-    author: {
-        color: '#656565'
-    },
-    separator: {
-        height: 1,
-        backgroundColor: '#dddddd'
-    },
-    listView: {
-        backgroundColor: '#F5FCFF'
-    },
-    loading: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-});
-
-class BookList extends Component {
+class Tvstations extends Component {
 
     constructor(props) {
         super(props);
@@ -80,6 +29,7 @@ class BookList extends Component {
             isLoading: true,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
+            
             })
         };
     }
@@ -87,11 +37,7 @@ class BookList extends Component {
     componentDidMount() {
         this.fetchData();
     }
-    _renderScene(route, navigator) {
-    if (route.id === 2) {
-      return <channels navigator={navigator} />
-        }
-    }
+   
     fetchData() {
 
         fetch(REQUEST_URL)
@@ -111,15 +57,13 @@ class BookList extends Component {
                     dataSource: this.state.dataSource.cloneWithRows(users),
                     isLoading: false
                 });
-            })
-            .done();
+            }).catch( (error) => {
+              console.warn('Actions - fetchJobs - recreived error: ', error)
+    })
     }
 
     render() {
-        <Navigator
-        initialRoute={{id: 1, }}
-        renderScene={this._renderScene}
-         />
+        
         if (this.state.isLoading) {
             return this.renderLoadingView();
         }
@@ -128,40 +72,40 @@ class BookList extends Component {
             
             <ListView
                 dataSource={this.state.dataSource}
-                renderRow={this.renderBook.bind(this)}
+                renderRow={this.renderData.bind(this)}
                 style={styles.listView}
                 />
-        );
-    }
+            );
+        }
 
-    renderBook(book) {
-        var data = book.endpoint;
+    renderData(mydata) {
+        var data = mydata.endpoint;
         const goToPageTwo = () => Actions.gray({data}); 
-
+        
         return(
-        <View>
-                    <TouchableOpacity  onPress={goToPageTwo}>
+            <View>
+               
 
-                    <View style={styles.cellContainer}>
-                        <Image
-                            source={{uri: 'http://www.kiodev.com/wp-content/uploads/2016/03/react-logo.png'}}
-                            style={styles.thumbnail} />
-                        <View style={styles.loading}>
+        
+            <TouchableOpacity  onPress={goToPageTwo}>
 
-                            <Text style={styles.content}>{book.name}</Text>
+            <View style={styles.container}>
+                <Image
+                    source={{uri: 'http://www.kiodev.com/wp-content/uploads/2016/03/react-logo.png'}}
+                    style={styles.thumbnail} />
+        
+        <View style={styles.rightContainer}>
+          <Text style={styles.title}>{mydata.name}</Text>
+        </View>
+      </View>
+              </TouchableOpacity>
 
+                                  <View style={styles.separator} />
 
-
-                        </View>
-                    </View>
-                    </TouchableOpacity>
-
-                    <View style={styles.separator} />
         </View>
      
          );
-   
-       
+ 
     }
 
     renderLoadingView() {
@@ -175,13 +119,46 @@ class BookList extends Component {
         );
     }
 
-    showBookDetail() {
-
-            this.navigator.push({id: 2,});
-
-    }
-
-
 }
+var styles = StyleSheet.create({
+    container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+        marginBottom: 5,
 
-module.exports = BookList;
+  },
+  header: {
+        flex: 1,
+        marginTop:10,
+
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+  rightContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: -40,
+    textAlign: 'center',
+  },
+  year: {
+    textAlign: 'center',
+  },
+  thumbnail: {
+    width: 53,
+    height: 81,
+  },
+  separator: {
+        height: 1,
+        backgroundColor: '#dddddd'
+    },
+  listView: {
+    paddingTop: 20,
+    backgroundColor: '#F5FCFF',
+  },
+});
+module.exports = Tvstations;
