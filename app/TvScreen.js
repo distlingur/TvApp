@@ -8,6 +8,7 @@ import channels from './ChannelScreen';
 import {
   AppRegistry,
   StyleSheet,
+  ActivityIndicator,
   Text,
   View,
   ListView,
@@ -16,9 +17,6 @@ import {
   Image
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-
-
-
 
 class Tvstations extends Component {
 
@@ -32,17 +30,19 @@ class Tvstations extends Component {
             })
         };
     }
-
+    /* Mounts data */
     componentDidMount() {
         this.fetchData();
     }
-   
+    /* Fetch data from api */
     fetchData() {
         var REQUEST_URL = 'http://apis.is/tv/';
 
         fetch(REQUEST_URL)
             .then((response) => response.json())
             .then((responseData) => {
+            /* Here we are working with responseData, we loop through responseData.results to get channels in the right format so we can render it in a list*/
+
                 var myData = responseData.results;
                 var length = myData.length;
                 var data;
@@ -70,37 +70,38 @@ class Tvstations extends Component {
             <ListView
                 dataSource={this.state.dataSource}
                 renderRow={this.renderData.bind(this)}
+                renderHeader={this.renderHeader.bind(this)}
                 style={styles.listView}
                 />
             );
         }
-
+    renderHeader() {
+        return (<View style={styles.header}>
+            <Text style={styles.title}></Text>
+        </View>);
+    }
+    /* Renders data from fetch function  */
     renderData(mydata) {
-        var data = mydata.endpoint;
-        const goToPageTwo = () => Actions.gray({data}); 
+        var endpoints = mydata.endpoint;
+        const goToChannelScreen = () => Actions.ChannelScreen({endpoints}); 
         
         return(
             <View>
-               
-
-        
-            <TouchableOpacity  onPress={goToPageTwo}>
+            <TouchableOpacity  onPress={goToChannelScreen}>
 
             <View style={styles.container}>
                 <Image
-                    source={{uri: 'http://www.kiodev.com/wp-content/uploads/2016/03/react-logo.png'}}
-                    style={styles.thumbnail} />
+                    source={{uri: 'http://www.nhic.gov.sa/_catalogs/masterpage/images/img_blank.png'}}
+                    style={styles.thumbnail} 
+                />
         
-        <View style={styles.rightContainer}>
-          <Text style={styles.title}>{mydata.name}</Text>
+                <View style={styles.rightContainer}>
+                    <Text style={styles.title}>{mydata.name}</Text>
+                </View>
+            </View>
+            </TouchableOpacity>
+            <View style={styles.separator} />
         </View>
-      </View>
-              </TouchableOpacity>
-
-                                  <View style={styles.separator} />
-
-        </View>
-     
          );
  
     }
@@ -108,14 +109,16 @@ class Tvstations extends Component {
     renderLoadingView() {
         return (
             <View style={styles.loading}>
-                
-                <Text>
-                    Loading Tv Stations...
-                </Text>
+                <ActivityIndicator
+                style={[styles.centering, {transform: [{scale: 1.5}]}]}
+                size="large"
+            />
+            <Text>
+                Loading Tv Stations...
+            </Text>
             </View>
-        );
-    }
-
+            );
+        }
 }
 var styles = StyleSheet.create({
     container: {
@@ -129,8 +132,7 @@ var styles = StyleSheet.create({
   },
   header: {
         flex: 1,
-        marginTop:10,
-
+        marginTop:40,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -142,13 +144,15 @@ var styles = StyleSheet.create({
     marginBottom: -40,
     textAlign: 'center',
   },
-  year: {
-    textAlign: 'center',
-  },
   thumbnail: {
     width: 53,
     height: 81,
   },
+  loading: {
+       flex: 1,
+       alignItems: 'center',
+       justifyContent: 'center'
+   },
   separator: {
         height: 1,
         backgroundColor: '#dddddd'

@@ -4,14 +4,12 @@ import { Router, Scene,TabBar } from 'react-native-router-flux';
 import TvScreen from './TvScreen';
 import ChannelScreen from './ChannelScreen';
 import Welcome from './WelcomeScreen';
-import searching from './SearchScreen.js';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
   ListView,
-
   TouchableHighlight,
   TouchableOpacity,
   Image
@@ -22,9 +20,7 @@ export default class App extends Component {
   render() {
     return (
       <Router>
-
       <Scene key="root">
-        
         <Scene key="home"
           component={Welcome}
           title="Sjónvarp"
@@ -37,17 +33,12 @@ export default class App extends Component {
           initial
         />
         <Scene
-          key="gray"
+          key="ChannelScreen"
           component={ChannelScreen}
           title= {'Dagskrá: ' + moment(new Date()).format('DD/MM/YYYY')}
 
         />
-        <Scene
-          key="search"
-          component={searching}
-          title="Leita af Sjónvarpsstöð"
-
-        />
+       
       </Scene>
     </Router>
     )
